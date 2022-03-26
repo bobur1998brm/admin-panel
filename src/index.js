@@ -3,10 +3,34 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {BrowserRouter} from "react-router-dom"
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import combineReducer from "./context/reducer/combinedReducer"
+import storage from 'redux-persist/lib/storage'
+import { persistStore, persistReducer } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react'
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  blacklist: [],
+  whitelist: []
+}
+
+const persistedReducer = persistReducer(persistConfig, combineReducer)
+const store = createStore(persistedReducer)
+let persistor = persistStore(store)
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <App />
+        </PersistGate>
+      </Provider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
