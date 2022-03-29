@@ -1,8 +1,10 @@
 import React, {useState} from 'react'
-import {   firebase} from "../server/firebase"
+import { firebase} from "../server/firebase"
+import {useDispatch} from "react-redux"
 
 function Login() {
     const [phone, setPhone] = useState("")
+    const dispatch = useDispatch()
 
     const phoneRegister = ()=>{
         let recaptcha = new firebase.auth.RecaptchaVerifier("recaptcha_container")
@@ -11,7 +13,7 @@ function Login() {
             .signInWithPhoneNumber(phone, recaptcha)
             .then(e => {
                 let code = prompt("")
-                e.confirm(code).then(user => console.log(user))
+                e.confirm(code).then(user => dispatch({type: "REGISTER_PHONE", payload: user.user.phoneNumber}))
             })
             .catch(er => console.log(er))
     }
